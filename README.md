@@ -112,9 +112,9 @@ sstableloader --nodes 10.244.2.3 --verbose /var/lib/cassandra/data/myapp/emp-ba3
 
 ## Verify count of all tables:
 
-select count(*) from abc;
-select count(*) from def;
-select count(*) from ghi;
-select count(*) from emp;
+1. select count(*) from abc;
+2. select count(*) from def;
+3. select count(*) from ghi;
+4. select count(*) from emp;
 
 
