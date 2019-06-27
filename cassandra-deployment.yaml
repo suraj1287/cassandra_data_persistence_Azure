@@ -1,0 +1,58 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cassandra
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cassandra
+  template:
+    metadata:
+      labels:
+        app: cassandra
+    spec:
+      containers:
+      - name: cassandra
+        image: mycompany/myapp-cassandra
+        resources:
+          requests:
+            cpu: 500m
+            memory: 4Gi
+          limits:
+            cpu: 500m
+            memory: 4Gi
+        ports:
+        - containerPort: 9042
+        volumeMounts:
+        - name: azurefileshare
+          mountPath: /var/lib/cassandra     
+      volumes:
+      - name: azurefileshare
+        azureFile:
+          secretName: storage-secret
+          shareName: cassandra-data
+          readOnly: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cassandra
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 9042
+    protocol: TCP
+    targetPort: 9042
+  selector:
+    app: cassandra
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: storage-secret
+type: Opaque
+data:
+  azurestorageaccountname: mystorageaccount
+  azurestorageaccountkey: mystorageaccountkey==
